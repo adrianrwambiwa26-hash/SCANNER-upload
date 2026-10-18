@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Follow Up Sheet | Card Scanner</title>
+<style>
+:root{--navy:#142b4a;--blue:#2563eb;--bg:#f4f7fb;--ink:#182230;--muted:#65748b;--line:#dce4ef;--green:#16805d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink)}
+header{background:var(--navy);color:#fff;padding:24px 18px}header .inner,main{max-width:980px;margin:auto}h1{margin:0;font-size:clamp(1.4rem,4vw,2rem)}header p{margin:7px 0 0;color:#d8e4f5}
+main{padding:22px 16px 48px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 4px 18px #142b4a0a}
+h2{font-size:1.1rem;margin:0 0 14px}.muted{color:var(--muted);font-size:.92rem}.services{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.service{border:1.5px solid var(--line);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;font-weight:700;background:white}
+.service input{accent-color:var(--blue);margin-right:5px}.service:has(input:checked){border-color:var(--blue);background:#eff6ff;color:#1746a2}
+.upload{display:block;border:2px dashed #b7c6da;border-radius:13px;padding:22px;text-align:center;background:#f9fbfe;cursor:pointer}
+.upload input{display:block;max-width:100%;margin:12px auto 0}.preview{max-width:100%;max-height:340px;display:none;margin:14px auto 0;border-radius:10px}
+button{border:0;border-radius:10px;padding:12px 16px;font-size:1rem;font-weight:700;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:#e9eef6;color:var(--navy)}button:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field label{display:block;font-size:.88rem;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;background:white}.field textarea{min-height:78px}
+.status{padding:12px 14px;border-radius:10px;margin:12px 0;display:none;white-space:pre-wrap}.status.info{display:block;background:#eff6ff;color:#1d4ed8}.status.success{display:block;background:#ecfdf5;color:#065f46}.status.error{display:block;background:#fff1f2;color:#9f1239}
+.note{background:#fff8e7;border:1px solid #f5df9b;border-radius:10px;padding:12px;font-size:.9rem}
+@media(max-width:620px){.grid{grid-template-columns:1fr}.services{grid-template-columns:1fr}.service{text-align:left;padding:12px}}
+</style>
+</head>
+<body>
+<header><div class="inner"><h1>Follow Up Sheet</h1><p>Scan a connection card and send the reviewed details to Google Sheets.</p></div></header>
+<main>
+  <section class="card">
+    <h2>1. Choose the service</h2>
+    <div class="services">
+      <label class="service"><input type="radio" name="service" value="9:00 AM" checked> 9:00 AM</label>
+      <label class="service"><input type="radio" name="service" value="10:45 AM"> 10:45 AM</label>
+      <label class="service"><input type="radio" name="service" value="6:00 PM"> 6:00 PM</label>
+    </div>
+    <p class="muted">The service choice will be saved in a new “Service” column. Please add that header in column M of your sheet.</p>
+  </section>
+
+  <section class="card">
+    <h2>2. Upload a photo of the card</h2>
+    <label class="upload">Choose a clear, well-lit photo of one card
+      <input id="photo" type="file" accept="image/*" capture="environment">
+      <img id="preview" class="preview" alt="Card photo preview">
+    </label>
+    <div class="actions"><button class="primary" id="scanBtn" disabled>Read card</button></div>
+    <p class="muted">Handwriting recognition can make mistakes. Always check the fields below before submitting.</p>
+  </section>
+
+  <section class="card">
+    <h2>3. Review the extracted details</h2>
+    <div class="grid">
+      <div class="field"><label for="date">Date received</label><input id="date" type="date"></div>
+      <div class="field"><label for="card">Card type</label><input id="card" placeholder="e.g. New Person"></div>
+      <div class="field"><label for="name">Name</label><input id="name" autocomplete="name"></div>
+      <div class="field"><label for="dob">Date of birth</label><input id="dob" placeholder="DD/MM/YYYY"></div>
+      <div class="field"><label for="gender">Gender</label><select id="gender"><option value="">Select…</option><option>Female</option><option>Male</option><option>Other</option><option>Prefer not to say</option></select></div>
+      <div class="field"><label for="area">Area</label><input id="area" placeholder="e.g. Table View"></div>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email"></div>
+      <div class="field"><label for="phone">Telephone number</label><input id="phone" type="tel" autocomplete="tel"></div>
+      <div class="field"><label for="fudate">Follow-up 1 date (optional)</label><input id="fudate" placeholder="e.g. 20 October 2026"></div>
+      <div class="field"><label for="fudetails">Follow-up 1 details (optional)</label><input id="fudetails" placeholder="Only if already known"></div>
+      <div class="field"><label for="fumethod">Follow-up 1 method (optional)</label><input id="fumethod" placeholder="e.g. WhatsApp"></div>
+      <div class="field"><label for="contacted">Who contacted? (optional)</label><input id="contacted"></div>
+    </div>
+    <div class="note" style="margin-top:16px">Privacy tip: use this only with your church's approval. Card photos may contain personal information. The scanner sends the image to the configured AI vision service for reading; avoid keeping photos longer than needed.</div>
+    <div id="status" class="status"></div>
+    <div class="actions"><button class="primary" id="submitBtn">Submit to Google Sheets</button><button class="secondary" id="clearBtn" type="button">Clear form</button></div>
+  </section>
+  <p class="muted">Setup required: deploy the included Google Apps Script as a web app, then paste its URL into the configuration below in this HTML file.</p>
+</main>
+<script>
+/* SETUP: paste the deployed Apps Script web-app URL between the quotes below. */
+const SCRIPT_URL = "PASTE_YOUR_DEPLOYED_APPS_SCRIPT_URL_HERE";
+const $ = id => document.getElementById(id);
+let imageData = "", imageMime = "";
+
+function localDateISO(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+$("date").value=localDateISO();
+$("photo").addEventListener("change", async e=>{
+  const file=e.target.files?.[0]; if(!file)return;
+  if(file.size>12*1024*1024){showStatus("Please choose an image smaller than 12 MB.","error");return;}
+  imageMime=file.type||"image/jpeg";
+  imageData=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(",")[1]);r.onerror=reject;r.readAsDataURL(file)});
+  $("preview").src=URL.createObjectURL(file);$("preview").style.display="block";$("scanBtn").disabled=false;showStatus("Photo ready. Select Read card to extract the details.","info");
+});
+function showStatus(msg,type){const s=$("status");s.textContent=msg;s.className="status "+type;}
+function service(){return document.querySelector('input[name="service"]:checked')?.value||"";}
+function fillForm(d){
+  const map={date:"date",card:"card",name:"name",dob:"dob",gender:"gender",area:"area",email:"email",phone:"phone",fudate:"followUpDate",fudetails:"followUpDetails",fumethod:"followUpMethod",contacted:"contactedBy"};
+  for(const [id,key] of Object.entries(map)){if(d[key]!==undefined&&d[key]!==null&&String(d[key]).trim()!=="")$(id).value=String(d[key]);}
+}
+$("scanBtn").addEventListener("click",async()=>{
+  if(!imageData)return;
+  if(!validUrl()){showStatus("Setup is not finished yet. Deploy Code.gs as a Google Apps Script web app and paste its URL into SCRIPT_URL in index.html.","error");return;}
+  $("scanBtn").disabled=true;showStatus("Reading the card… please wait.","info");
+  try{
+    const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"ocr",imageBase64:imageData,mimeType:imageMime})});
+    const data=await res.json();if(!data.ok)throw new Error(data.error||"Could not read the card.");
+    fillForm(data.fields||{});showStatus("Card read. Please check every field, especially names, dates and phone numbers.","success");
+  }catch(err){showStatus("Could not read the card: "+err.message+"\nCheck the Apps Script deployment and AI API key.","error");}
+  finally{$("scanBtn").disabled=false;}
+});
+function validUrl(){return SCRIPT_URL.startsWith("https://script.google.com/")&&!SCRIPT_URL.includes("PASTE_");}
+$("submitBtn").addEventListener("click",async()=>{
+  if(!validUrl()){showStatus("Setup is not finished yet. Paste your deployed Apps Script URL into SCRIPT_URL in index.html.","error");return;}
+  const payload={action:"submit",service:service(),date:$("date").value,card:$("card").value,name:$("name").value,dob:$("dob").value,gender:$("gender").value,area:$("area").value,email:$("email").value,phone:$("phone").value,followUpDate:$("fudate").value,followUpDetails:$("fudetails").value,followUpMethod:$("fumethod").value,contactedBy:$("contacted").value};
+  if(!payload.name.trim()){showStatus("Please enter or check the person's name before submitting.","error");return;}
+  $("submitBtn").disabled=true;showStatus("Submitting to Google Sheets…","info");
+  try{
+    const res=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(payload)});
+    const data=await res.json();if(!data.ok)throw new Error(data.error||"Submission failed.");
+    showStatus("Submitted successfully. A new row has been added to the Follow Up Sheet.","success");
+  }catch(err){showStatus("Submission failed: "+err.message+"\nCheck the web-app URL and deployment permissions. If the row may already have been added, check the sheet before retrying.","error");}
+  finally{$("submitBtn").disabled=false;}
+});
+$("clearBtn").addEventListener("click",()=>{for(const id of ["card","name","dob","area","email","phone","fudate","fudetails","fumethod","contacted"])$(id).value="";$("gender").value="";$("date").value=localDateISO();$("photo").value="";$("preview").style.display="none";imageData="";imageMime="";$("scanBtn").disabled=true;showStatus("Form cleared.","info");});
+</script>
+</body></html>
